@@ -17,7 +17,7 @@ CORS(app)  # Allow cross-origin requests
 
 # Function to load data from GitHub
 def load_data_from_github():
-    url = 'https://raw.githubusercontent.com/punchpatcha/thai-sms-detection/master/spamsmsdataset.csv?token=GHSAT0AAAAAACWAOMF4UEC5NKFFARWGPFJWZV43XPA'
+    url = 'https://raw.githubusercontent.com/punchpatcha/thai-sms-detection/master/spamsmsdataset.csv'
     response = requests.get(url)
     response.raise_for_status()  # Ensure we notice bad responses
     csv_data = StringIO(response.text)
