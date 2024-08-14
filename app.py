@@ -21,7 +21,7 @@ CORS(app)  # Allow cross-origin requests
 
 # Model training code
 def train_model():
-    file_path = "C:\\Users\\Newju\\Downloads\\spamsmsdataset.csv"
+    file_path = "C:\\Punch\\Thai-sms-detection\\backend-ai\\spamsmsdataset.csv"
     sms = pd.read_csv(file_path, encoding='utf-8')
     sms.dropna(inplace=True, axis=1)
     sms.columns = ["label", "msg"]
