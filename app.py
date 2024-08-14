@@ -1,28 +1,31 @@
 from flask import Flask, request, jsonify
-
 from flask_cors import CORS
-
-
 import pandas as pd
-import re
 import string
 from pythainlp.corpus import thai_stopwords
 from pythainlp.tokenize.multi_cut import mmcut
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.svm import LinearSVC
-from sklearn import metrics
-import pickle
 import emoji
+import requests
+from io import StringIO
 
 # Flask app setup
 app = Flask(__name__)
 CORS(app)  # Allow cross-origin requests
 
+# Function to load data from GitHub
+def load_data_from_github():
+    url = 'https://raw.githubusercontent.com/punchpatcha/thai-sms-detection/main/spamsmsdataset.csv'
+    response = requests.get(url)
+    csv_data = StringIO(response.text)
+    df = pd.read_csv(csv_data, encoding='utf-8')
+    return df
+
 # Model training code 
 def train_model():
-    file_path = "spamsmsdataset.csv"
-    sms = pd.read_csv(file_path, encoding='utf-8')
+    sms = load_data_from_github()
     sms.dropna(inplace=True, axis=1)
     sms.columns = ["label", "msg"]
     sms["label_sign"] = sms.label.map({"ham": 0, "spam": 1})
