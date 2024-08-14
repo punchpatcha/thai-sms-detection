@@ -1,5 +1,3 @@
-from flask import Flask, request, jsonify
-from flask_cors import CORS
 import pandas as pd
 import string
 from pythainlp.corpus import thai_stopwords
@@ -7,26 +5,21 @@ from pythainlp.tokenize.multi_cut import mmcut
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.svm import LinearSVC
+import pickle
 import emoji
 import requests
 from io import StringIO
-
-# Flask app setup
-app = Flask(__name__)
-CORS(app)  # Allow cross-origin requests
 
 # Function to load data from GitHub
 def load_data_from_github():
     url = 'https://raw.githubusercontent.com/punchpatcha/thai-sms-detection/master/spamsmsdataset.csv'
     response = requests.get(url)
-    response.raise_for_status()  # Ensure we notice bad responses
     csv_data = StringIO(response.text)
     df = pd.read_csv(csv_data, encoding='utf-8')
     return df
 
-# Model training code 
+# Model training code
 def train_model():
-    # Load data from GitHub
     sms = load_data_from_github()
     sms.dropna(inplace=True, axis=1)
     sms.columns = ["label", "msg"]
@@ -51,19 +44,13 @@ def train_model():
     clf_svc = LinearSVC(C=1, dual=False)
     clf_svc.fit(X_train_dim, y_train)
 
-    return clf_svc, vect
+    # Save the model and vectorizer to disk
+    with open('model.pkl', 'wb') as f:
+        pickle.dump(clf_svc, f)
+    with open('vectorizer.pkl', 'wb') as f:
+        pickle.dump(vect, f)
 
+    print("Model and vectorizer saved.")
 
-# Train the model when the Flask app starts
-clf, cv = train_model()
-
-@app.route('/predict', methods=['POST'])
-def predict():
-    data = request.json['message']
-    vect_data = cv.transform([data]).toarray()
-    prediction = clf.predict(vect_data)[0]
-    result = "spam" if prediction == 1 else "ham"
-    return jsonify({"prediction": result})
-
-if __name__ == '__main__':
-    app.run(debug=True)
+if __name__ == "__main__":
+    train_model()
