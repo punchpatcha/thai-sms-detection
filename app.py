@@ -26,15 +26,11 @@ def load_data_from_github():
 
 # Model training code 
 def train_model():
+    # Load data from GitHub
     sms = load_data_from_github()
-    
-    # Print the first few rows to understand the structure
-    print("First few rows of the dataset:")
-    print(sms.head())
-
-    sms.columns = ["v1", "v2"] 
-    sms.dropna(inplace=True)
-    sms["label_sign"] = sms.v1.map({"ham": 0, "spam": 1})
+    sms.dropna(inplace=True, axis=1)
+    sms.columns = ["label", "msg"]
+    sms["label_sign"] = sms.label.map({"ham": 0, "spam": 1})
 
     def clean_word(mess):
         nopunc = [char for char in mess if char not in string.punctuation and not any(emoji.is_emoji(c) for c in char)]
@@ -44,8 +40,8 @@ def train_model():
         filtered_sentence = [w for w in word_tokens if w not in stopwords_th]
         return ' '.join(filtered_sentence)
 
-    sms["clean_msg"] = sms.v2.apply(clean_word)
-    sms.dropna(subset=['label_sign'], inplace=True)
+    sms["clean_msg"] = sms.msg.apply(clean_word)
+    sms.dropna(subset=['label_sign'], inplace=True, axis=0)
 
     X_train, X_test, y_train, y_test = train_test_split(sms.clean_msg, sms.label_sign, random_state=1)
     vect = CountVectorizer()
@@ -55,8 +51,8 @@ def train_model():
     clf_svc = LinearSVC(C=1, dual=False)
     clf_svc.fit(X_train_dim, y_train)
 
-    # Save the model and vectorizer to memory instead of disk
     return clf_svc, vect
+
 
 # Train the model when the Flask app starts
 clf, cv = train_model()
