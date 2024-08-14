@@ -19,9 +19,9 @@ import emoji
 app = Flask(__name__)
 CORS(app)  # Allow cross-origin requests
 
-# Model training code
+# Model training code 
 def train_model():
-    file_path = "C:\\Punch\\Thai-sms-detection\\backend-ai\\spamsmsdataset.csv"
+    file_path = "spamsmsdataset.csv"
     sms = pd.read_csv(file_path, encoding='utf-8')
     sms.dropna(inplace=True, axis=1)
     sms.columns = ["label", "msg"]
