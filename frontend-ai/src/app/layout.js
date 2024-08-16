@@ -1,20 +1,13 @@
-// layout.js or in the head section of your Next.js project
+// src/app/layout.js
+import { Mitr } from 'next/font/google';
+import './globals.css'; // Ensure this path is correct
 
-import Head from 'next/head';
-import { Roboto } from 'next/font/google';
+const mitr = Mitr({ weight: ['400', '700'] }); // Specify the required weights
 
-const mitr = Roboto({
-  subsets: ['latin'],
-  weights: [400, 700], // Add weights as needed
-});
-
-export default function Layout({ children }) {
+export default function RootLayout({ children }) {
   return (
-    <html>
-      <head>
-        <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@400;700&display=swap" rel="stylesheet" />
-      </head>
-      <body className={mitr.className}>{children}</body>
+    <html lang="en" className={mitr.className}>
+      <body>{children}</body>
     </html>
   );
 }
