@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import styles from './page.module.css';
-import '../styles/globals.css'; // Adjust path as necessary
+
 
 export default function Home() {
   const [message, setMessage] = useState('');
