@@ -20,7 +20,6 @@ export default function Home() {
       body: JSON.stringify({ message }),
     });
     
-
     if (!response.ok) {
       console.error('Error:', response.statusText);
       return;
