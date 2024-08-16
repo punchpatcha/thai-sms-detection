@@ -1,26 +1,20 @@
-/* Global styles */
-:root {
-  --light-blue: #2862b9;
-  --button-bg: #ccd8e7;
-  --border-radius: 20px;
-}
+/* src/app/page.module.css */
 
-/* Specific styles for the page */
 .main {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
   background-color: var(--light-blue);
-  font-family: 'Mitr', sans-serif;
+  height: 100vh;
+  text-align: center;
 }
 
 textarea {
   background-color: white;
-  border-radius: var(--border-radius);
-  border: 1px solid #ccc;
+  border-radius: 20px;
   padding: 10px;
+  border: 1px solid #ccc;
 }
 
 button {
@@ -30,5 +24,12 @@ button {
   border-radius: 50%;
   padding: 10px 20px;
   cursor: pointer;
-  font-size: 16px;
+}
+
+button:hover {
+  background-color: #2862b9;
+}
+
+p {
+  font-family: 'Roboto', sans-serif; /* Ensure Roboto font is applied */
 }
