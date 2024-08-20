@@ -1,4 +1,5 @@
 import os
+import re
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import pandas as pd
@@ -49,6 +50,7 @@ def get_top_spam_words():
     for msg in sms[sms.label == 'spam']['clean_msg']:
         words = mmcut(msg)
         words = [word for word in words if re.match(r'^[ก-๙]+$', word) and word not in stopwords_th]
+
         spam_words_counter.update(words)
 
     # Get the top 10 most common words
