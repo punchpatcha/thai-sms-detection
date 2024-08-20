@@ -4,16 +4,15 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Thai SMS Detection", // Custom title
-  description: "A website for detecting Thai SMS spam.", // Optional description
+  title: "Thai SMS Detection",
+  description: "AI SMS Detection Project",
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-        <link rel="icon" type="image/png" href="/favicon.png" /> {/* Custom PNG favicon */}
-        <meta name="description" content={metadata.description} />
+        <link rel="icon" href="/favicon.png" />
       </head>
       <body className={inter.className}>{children}</body>
     </html>
