@@ -61,7 +61,8 @@
 }
 
 .button:disabled {
-  margin-left: 40%;
+  margin-left: auto;
+  margin-right: auto;
   margin-top: 1rem; /* Space above the button */
   padding: 0.5rem 1.2rem; /* Padding inside the button */
   cursor: not-allowed;
@@ -94,6 +95,8 @@
 /* Responsive Styles for Mobile */
 @media (max-width: 700px) {
   .main {
+    display: grid;
+    grid-template-rows: auto auto;
     padding: 1rem; /* Reduce padding for smaller screens */
   }
 
