@@ -12,6 +12,11 @@ export default function Home() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // If message is empty, clear the result and return
+    if (!message.trim()) {
+      setResult(''); // Clear the result
+      return;}
+      
   // Set loading to true
   setLoading(true);
 
