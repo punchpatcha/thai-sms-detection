@@ -83,17 +83,16 @@ html,
 body {
   max-width: 100vw;
   overflow-x: hidden;
-  font-family: 'Mitr', sans-serif; /* Apply Mitr font globally */
-}
+  font-family: 'Mitr', sans-serif;}
 
 body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
       to bottom,
       transparent,
-      rgb(var(--background-end-rgb))
+      #2c3e50 
     )
-    rgb(var(--background-start-rgb));
+    #f2f4f4
 }
 
 a {
@@ -106,34 +105,66 @@ a {
     color-scheme: dark;
   }
 }
-
-/* Font Classes */
-.mitr-extralight {
-  font-family: 'Mitr', sans-serif;
-  font-weight: 200;
-}
-
-.mitr-light {
-  font-family: 'Mitr', sans-serif;
-  font-weight: 300;
-}
-
-.mitr-regular {
-  font-family: 'Mitr', sans-serif;
+/* Define custom font faces */
+@font-face {
+  font-family: 'Mitr';
   font-weight: 400;
+  src: url('/fonts/Mitr-Regular.ttf') format('truetype');
 }
 
-.mitr-medium {
-  font-family: 'Mitr', sans-serif;
+@font-face {
+  font-family: 'Mitr';
   font-weight: 500;
+  src: url('/fonts/Mitr-Medium.ttf') format('truetype');
 }
 
-.mitr-semibold {
-  font-family: 'Mitr', sans-serif;
-  font-weight: 600;
-}
-
-.mitr-bold {
-  font-family: 'Mitr', sans-serif;
+@font-face {
+  font-family: 'Mitr';
   font-weight: 700;
+  src: url('/fonts/Mitr-Bold.ttf') format('truetype');
 }
+
+h1 {
+  font-weight: 400; /* Default weight for h1 */
+}
+
+h2 {
+  font-weight: 400; /* Default weight for h1 */
+  font-size: large;
+}
+
+
+
+/* Style all text entries, buttons, and form elements */
+input, textarea, button {
+  font-family: 'Mitr', sans-serif;
+  font-weight: 400; /* Default weight for form elements */
+  border: 1px solid #ccc; /* Style for border */
+  padding: 0.5rem; /* Padding for better appearance */
+  border-radius: 0.35rem; 
+}
+
+/* Style buttons specifically */
+button {
+  font-weight: 500;
+  background-color: #2e4053 ; 
+  color: white;
+  border: none; 
+  padding: 0.5rem 1rem; 
+  border-radius: 2rem; 
+  cursor: pointer; 
+}
+
+/* Style links */
+a {
+  font-family: 'Mitr', sans-serif;
+  font-weight: 400; /* Default weight for links */
+  color: #0070f3; /* Optional: Link color */
+  text-decoration: none; /* Optional: Remove underline */
+}
+
+a:hover {
+  text-decoration: underline; /* Optional: Underline on hover */
+}
+
+
