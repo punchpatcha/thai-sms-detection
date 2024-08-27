@@ -41,6 +41,26 @@
   display: block; /* Ensure it centers horizontally */
 }
 
+/* Spinner container */
+.spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1); /* Light border */
+  border-left: 4px solid #3498db; /* Color of the spinner */
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  animation: spin 1s linear infinite;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 0.5rem; /* Space between spinner and text */
+}
+
+.button:disabled {
+  margin-left: 40%;
+  margin-top: 1rem; /* Space above the button */
+  padding: 0.5rem 1.2rem; /* Padding inside the button */
+  cursor: not-allowed;
+  opacity: 0.6;}
+
 .messageBox {
   margin-top: 1rem;
   padding: 1rem;
