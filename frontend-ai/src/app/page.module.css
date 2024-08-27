@@ -52,6 +52,19 @@
   text-align: center;
 }
 
+
+/* Spam message style */
+.messageBox.spam {
+  background-color: #ec7063 ; /* Red background */
+  border-color: #ec7063 ; /* Darker red border */
+}
+
+/* Ham message style */
+.messageBox.ham {
+  background-color: #52be80  ; /* Green background */
+  border-color: #52be80 ; /* Darker green border */
+}
+
 /* Responsive Styles for Mobile */
 @media (max-width: 700px) {
   .main {
