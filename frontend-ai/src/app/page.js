@@ -1,4 +1,4 @@
-"use client";
+"use client"; 
 
 import { useState, useEffect } from 'react';
 import styles from './page.module.css';
@@ -6,24 +6,22 @@ import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
-  LineElement,
   PointElement,
+  ScatterController,
   Title,
   Tooltip,
   Legend,
-  BarElement
 } from 'chart.js';
-import { Line, Bar } from 'react-chartjs-2';
+import { Scatter } from 'react-chartjs-2';
 
 // Register the necessary components for the charts
 ChartJS.register(
-  CategoryScale, 
-  LinearScale, 
-  LineElement, 
-  PointElement, 
-  BarElement, 
-  Title, 
-  Tooltip, 
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  ScatterController,
+  Title,
+  Tooltip,
   Legend
 );
 
@@ -34,26 +32,39 @@ export default function Home() {
 
   const [hamCount, setHamCount] = useState(0);
   const [spamCount, setSpamCount] = useState(0);
-  const [topSpamWords, setTopSpamWords] = useState([]);
+
+  const [smsClassificationData, setSmsClassificationData] = useState([]);
 
   useEffect(() => {
-    // Fetch the top spam words when the component mounts
-    const fetchTopSpamWords = async () => {
+    // Fetch SMS classification data
+    const fetchClassificationData = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/top-spam-words`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/predict`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ message }),
+        });
         if (response.ok) {
           const data = await response.json();
-          setTopSpamWords(data.top_words);
+          setSmsClassificationData([
+            { label: 'Ham', value: hamCount },
+            { label: 'Spam', value: spamCount }
+          ]);
+          setResult(data.prediction);
         } else {
-          console.error('Error fetching top spam words:', response.statusText);
+          console.error('Error fetching classification data:', response.statusText);
         }
       } catch (error) {
         console.error('Error:', error);
       }
     };
 
-    fetchTopSpamWords();
-  }, []);
+    if (message.trim()) {
+      fetchClassificationData();
+    }
+  }, [message]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -63,53 +74,82 @@ export default function Home() {
       setResult(''); // Clear the result
       return;
     }
-
-    setLoading(true);
-
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/predict`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ message }),
-      });
       
-      if (response.ok) {
-        const data = await response.json();
-        setResult(data.prediction);
-
-        // Update the count based on the result
-        if (data.prediction === 'ham') {
-          setHamCount(prevCount => prevCount + 1);
-        } else if (data.prediction === 'spam') {
-          setSpamCount(prevCount => prevCount + 1);
-        }
-      } else {
-        console.error('Error:', response.statusText);
-      }
-    } catch (error) {
-      console.error('Error:', error);
+    setLoading(true);
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/predict`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ message }),
+    });
+    
+    if (!response.ok) {
+      console.error('Error:', response.statusText);
+      setLoading(false); // Set loading to false even if there's an error
+      return;
     }
 
-    setLoading(false);
+    const data = await response.json();
+    setResult(data.prediction);
+
+    // Update the count based on the result
+    if (data.prediction === 'ham') {
+      setHamCount(prevCount => prevCount + 1);
+    } else if (data.prediction === 'spam') {
+      setSpamCount(prevCount => prevCount + 1);
+    }
+    setLoading(false); // Set loading to false after response
   };
 
   const resultClass = result === 'spam' ? styles.spam : result === 'ham' ? styles.ham : '';
 
-  const topWords = topSpamWords.length > 0 ? topSpamWords : [];
-
-  const lineChartData = {
-    labels: ['Ham', 'Spam'],
+  const scatterChartData = {
     datasets: [
       {
-        label: 'SMS Classification Count',
-        data: [hamCount, spamCount],
-        borderColor: '#52be80',
-        backgroundColor: 'rgba(82, 190, 128, 0.2)',
-        fill: true,
+        label: 'SMS Classification',
+        data: [
+          { x: 0, y: hamCount, label: 'Ham' },
+          { x: 1, y: spamCount, label: 'Spam' },
+        ],
+        backgroundColor: ['#52be80', '#ec7063'],
+        borderColor: ['#2e7d32', '#c62828'],
+        borderWidth: 1,
+        pointRadius: 10, // Adjust the size of the circles
       },
     ],
+  };
+
+  const scatterChartOptions = {
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: 'Classification',
+        },
+        ticks: {
+          callback: function(value) {
+            return value === 0 ? 'Ham' : 'Spam';
+          },
+        },
+      },
+      y: {
+        title: {
+          display: true,
+          text: 'Count',
+        },
+        beginAtZero: true,
+      },
+    },
+    plugins: {
+      legend: {
+        display: true,
+      },
+      title: {
+        display: true,
+        text: 'SMS Classification Plot',
+      },
+    },
   };
 
   return (
@@ -119,64 +159,11 @@ export default function Home() {
         <h2>ตรวจจับข้อความหลอกลวง</h2>
       </div>
 
-      {/* Line Chart for SMS Classification */}
+      {/* Scatter Plot for SMS Classification */}
       <div className={styles.chartContainer}>
-        <Line
-          data={lineChartData}
-          options={{
-            scales: {
-              y: {
-                beginAtZero: true,
-                title: {
-                  display: true,
-                  text: 'Count'
-                }
-              },
-              x: {
-                title: {
-                  display: true,
-                  text: 'Category'
-                }
-              }
-            },
-            plugins: {
-              legend: {
-                display: true,
-              },
-              title: {
-                display: true,
-                text: 'SMS Classification Count',
-              }
-            }
-          }}
-        />
-      </div>
-
-      {/* Top Spam Words Visualization */}
-      <div className={styles.chartContainer}>
-        <Bar
-          data={{
-            labels: topWords.map(word => word.word),
-            datasets: [
-              {
-                label: 'Top 10 Spam Words',
-                data: topWords.map(word => word.count),
-                backgroundColor: '#ec7063',
-              },
-            ],
-          }}
-          options={{
-            responsive: true,
-            plugins: {
-              legend: {
-                display: true,
-              },
-              title: {
-                display: true,
-                text: 'Top 10 Thai Spam Words',
-              },
-            },
-          }}
+        <Scatter
+          data={scatterChartData}
+          options={scatterChartOptions}
         />
       </div>
 
@@ -196,11 +183,7 @@ export default function Home() {
         </form>
         {result && (
           <div className={`${styles.messageBox} ${resultClass} ${styles.resultContainer}`}>
-            {result === 'spam' ? 'Spam (ข้อความหลอกลวง)' : 'Ham (ข้อความนี้ปลอดภัย)'}
-            <div className={styles.infoBox}>
-              ผลลัพธ์จากการเทรน AI ด้วยโมเดล SVM โดยใช้ชุดข้อมูลล่าสุด 809 ข้อความ SMS ภาษาไทย จากการเทรนครั้งล่าสุดมีความแม่นยำ 90% 
-              และยังอยู่ในกระบวนการเทรนต่อไป ซึ่งผลลัพธ์นี้เป็นแค่การทำนายเพียงเบื้องต้นเท่านั้น
-            </div>
+            {result === 'ham' ? 'This message is classified as Ham.' : 'This message is classified as Spam.'}
           </div>
         )}
       </div>
