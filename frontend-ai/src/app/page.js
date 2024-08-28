@@ -1,6 +1,6 @@
 "use client"; 
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styles from './page.module.css';
 import {
   Chart as ChartJS,
@@ -23,6 +23,28 @@ export default function Home() {
 
   const [hamCount, setHamCount] = useState(0);
   const [spamCount, setSpamCount] = useState(0);
+  
+ // State for top spam words
+ const [topSpamWords, setTopSpamWords] = useState([]);
+
+  useEffect(() => {
+    // Fetch the top spam words when the component mounts
+    const fetchTopSpamWords = async () => {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/top-spam-words`);
+        if (response.ok) {
+          const data = await response.json();
+          setTopSpamWords(data.top_words);
+        } else {
+          console.error('Error fetching top spam words:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
+
+    fetchTopSpamWords();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -79,21 +101,42 @@ export default function Home() {
         <h1>Thai SMS Detection</h1>
         <h2 >ตรวจจับข้อความหลอกลวง</h2>
       </div>
-      {/* Chart Visualization */}
-          <div className={styles.chartContainer}>
-            <Bar
-              data={{
-                labels: ['Ham', 'Spam'],
-                datasets: [
-                  {
-                    label: 'SMS Classification',
-                    data: [hamCount, spamCount],
-                    backgroundColor: ['#52be80', '#ec7063'],
-                  },
-                ],
-              }}
-            />
-          </div>
+        {/* Chart Visualization */}
+        <div className={styles.chartContainer}>
+        <Bar
+          data={{
+            labels: ['Ham', 'Spam'],
+            datasets: [
+              {
+                label: 'SMS Classification',
+                data: [hamCount, spamCount],
+                backgroundColor: ['#52be80', '#ec7063'],
+              },
+            ],
+          }}
+        />
+      </div>
+
+      {/* Top Spam Words Visualization */}
+      <div className={styles.chartContainer}>
+        {topSpamWords.length > 0 ? (
+          <Bar
+            data={{
+              labels: topSpamWords.map(word => word.word),
+              datasets: [
+                {
+                  label: 'Top 10 Spam Words',
+                  data: topSpamWords.map(word => word.count),
+                  backgroundColor: '#ec7063',
+                },
+              ],
+            }}
+          />
+        ) : (
+          <p>Loading top spam words...</p>
+        )}
+      </div>
+
       <div className={styles.formContainer}>
         <form onSubmit={handleSubmit}>
           <textarea
