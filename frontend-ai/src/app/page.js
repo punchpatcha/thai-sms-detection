@@ -11,7 +11,7 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
-import { Bar } from 'react-chartjs-2';
+import { Bubble } from 'react-chartjs-2';
 
 // Register the necessary components for the chart
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
@@ -20,15 +20,17 @@ export default function Home() {
   const [message, setMessage] = useState('');
   const [result, setResult] = useState('');
   const [loading, setLoading] = useState(false); // New state for loading
-
-  const [hamCount, setHamCount] = useState(0);
-  const [spamCount, setSpamCount] = useState(0);
+  
+  const [bubbleData, setBubbleData] = useState([]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Split the message into words
+    const words = message.trim().split(/\s+/);
+
     // If message is empty, clear the result and return
-    if (!message.trim()) {
+    if (words.length == 0) {
       setResult(''); // Clear the result
       return;}
       
@@ -60,17 +62,43 @@ export default function Home() {
 
     const data = await response.json();
     setResult(data.prediction);
+    setBubbleData(data.wordFrequencies); // Example structure: [{ word: 'word1', ham: 5, spam: 10 }, ...]
 
-    // Update the count based on the result
-    if (data.prediction === 'ham') {
-      setHamCount(prevCount => prevCount + 1);
-    } else if (data.prediction === 'spam') {
-      setSpamCount(prevCount => prevCount + 1);
-    }
     setLoading(false); // Set loading to false after response
   };
 
   const resultClass = result === 'spam' ? styles.spam : result === 'ham' ? styles.ham : '';
+
+  const chartData = {
+    datasets: bubbleData.map((wf) => ({
+      label: wf.word,
+      data: [
+        {
+          x: wf.ham,
+          y: wf.spam,
+          r: Math.sqrt(wf.ham + wf.spam) * 5, // Bubble size based on total frequency (adjust size as needed)
+        },
+      ],
+      backgroundColor: wf.ham > wf.spam ? '#52be80' : '#ec7063', // Green for Ham, Red for Spam
+    })),
+  };
+
+  const chartOptions = {
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: 'Ham Frequency',
+        },
+      },
+      y: {
+        title: {
+          display: true,
+          text: 'Spam Frequency',
+        },
+      },
+    },
+  };
 
   return (
     <main className={styles.main}>
@@ -79,21 +107,13 @@ export default function Home() {
         <h1>Thai SMS Detection</h1>
         <h2 >ตรวจจับข้อความหลอกลวง</h2>
       </div>
-      {/* Chart Visualization */}
-      <div className={styles.chartContainer}>
-            <Bar
-              data={{
-                labels: ['Ham', 'Spam'],
-                datasets: [
-                  {
-                    label: 'SMS Classification',
-                    data: [hamCount, spamCount],
-                    backgroundColor: ['#52be80', '#ec7063'],
-                  },
-                ],
-              }}
-            />
-          </div>
+
+      {bubbleData.length > 0 && (
+        <div className={styles.chartContainer}>
+          <Bubble data={chartData} options={chartOptions} />
+        </div>
+      )}
+
       <div className={styles.formContainer}>
         <form onSubmit={handleSubmit}>
           <textarea
