@@ -128,20 +128,34 @@
   opacity: 1;
 }
 
-.chartContainer {
-  margin: 2rem auto;
+.wordCloudContainer {
   width: 100%;
-  max-width: 600px;
+  max-width: 800px;
+  height: 400px;
+  margin: 20px auto;
+  text-align: center;
+  position: relative;
+}
+
+.wordCloudContainer svg {
+  width: 100%;
+  height: 100%;
 }
 
 /* Responsive Styles for Mobile */
 @media (max-width: 700px) {
   .logo {
-    height: 60px;
+    height: 80px;
   }
 
   .main {
     padding: 1rem;
+  }
+
+  .header {
+    text-align: center;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
   }
 
   .textarea {
