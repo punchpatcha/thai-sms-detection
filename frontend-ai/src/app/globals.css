@@ -89,10 +89,12 @@ body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
       to bottom,
-      transparent,
-      #2c3e50 
+      #ffffff,
+      #eef4ff
+      ,
+      #4f525a 
     )
-    #f2f4f4
+
 }
 
 a {
@@ -147,7 +149,7 @@ input, textarea, button {
 /* Style buttons specifically */
 button {
   font-weight: 500;
-  background-color: #2e4053 ; 
+  background-color: #35415a ; 
   color: white;
   border: none; 
   padding: 0.5rem 1rem; 

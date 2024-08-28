@@ -1,121 +1,126 @@
 /* Base styles for larger screens */
 .main {
   display: grid;
-  grid-template-rows: 10rem auto auto; 
-  height: 100vh; 
-  padding: 5rem; 
-  gap: 1rem; 
+  grid-template-rows: auto auto auto auto; /* 4 rows: logo, header, textarea, button */
+  height: 100vh;
+  padding: 2rem;
+  margin: 0 auto; /* Center the main content */
+  max-width: 1200px; /* Limit the maximum width */
+}
+
+.logoContainer {
+  display: flex;
+  justify-content: flex-start; /* Center the logo */
+  align-items: flex-start;
+}
+
+.logo {
+  height: 80px;
+  max-width: 100%;
 }
 
 .header {
   text-align: center;
-  font-size: 1.5rem;
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
 }
 
 .formContainer {
-  color: white;
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 1rem;
   width: 100%;
+  align-items: center; /* Center the form container */
 }
 
 .textarea {
-  margin-left: auto;
-  margin-right: auto;
-  width: 600px; 
-  max-width: 100%; /* Ensure it doesn’t overflow the container */
-  height: 150px; 
-  padding: 0.5rem; 
+  width: 100%;
+  max-width: 600px;
+  height: 150px;
+  padding: 0.5rem;
   font-size: 1rem;
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: center; /* Center the button */
+  width: 100%;
 }
 
 .button {
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 1rem;
-  padding: 0.5rem 1rem;
   font-size: 1rem;
   cursor: pointer;
-  display: block; /* Ensure it centers horizontally */
+  width: 100%; /* Full width */
+  max-width: 500px;
+  height: 50px;
 }
 
-/* Spinner container */
 .spinner {
-  border: 4px solid rgba(0, 0, 0, 0.1); /* Light border */
-  border-left: 4px solid #3498db; /* Color of the spinner */
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left: 4px solid #3498db;
   border-radius: 50%;
   width: 20px;
   height: 20px;
   animation: spin 1s linear infinite;
   display: inline-block;
   vertical-align: middle;
-  margin-right: 0.5rem; /* Space between spinner and text */
+  margin-right: 0.5rem;
 }
 
-/* Keyframes for spinning animation */
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
 
 .button:disabled {
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 1rem; /* Space above the button */
-  padding: 0.5rem 1.2rem; /* Padding inside the button */
   cursor: not-allowed;
-  opacity: 0.6;}
+  opacity: 0.6;
+}
 
 .messageBox {
-  margin-top: 1rem;
   padding: 1rem;
   border-radius: 8px;
   border: 1px solid;
   color: #fff;
-  max-width: 600px;
-  width: 100%;
+  height: 60px;
+  width: 70%;
   text-align: center;
+  margin: 1rem auto; /* Center the message box */
 }
 
-
-/* Spam message style */
 .messageBox.spam {
-  background-color: #ec7063 ; /* Red background */
-  border-color: #ec7063 ; /* Darker red border */
+  background-color: #ec7063;
+  border-color: #ec7063;
 }
 
-/* Ham message style */
 .messageBox.ham {
-  background-color: #52be80  ; /* Green background */
-  border-color: #52be80 ; /* Darker green border */
+  background-color: #52be80;
+  border-color: #52be80;
 }
 
-/* Info Box Styles */
 .resultContainer {
   position: relative;
   display: inline-block;
-  cursor: pointer; 
+  cursor: pointer;
 }
 
 .infoBox {
   font-size: small;
   visibility: hidden;
   width: 300px;
-  background-color: #000000;
+  background-color: #000;
   color: #fff;
   text-align: center;
   border-radius: 5px;
   padding: 10px;
   position: absolute;
   z-index: 1;
-  bottom: 125%; 
+  bottom: 125%;
   left: 50%;
-  margin-left: -150px; 
+  margin-left: -150px;
   opacity: 0;
   transition: opacity 0.3s;
-  white-space: pre-wrap; 
+  white-space: pre-wrap;
 }
 
 .resultContainer:hover .infoBox {
@@ -124,46 +129,40 @@
 }
 
 .chartContainer {
-  margin-left: auto;
-  margin-right: auto;
+  margin: 2rem auto;
   width: 100%;
   max-width: 600px;
 }
 
-
-
 /* Responsive Styles for Mobile */
 @media (max-width: 700px) {
+  .logo {
+    height: 60px;
+  }
+
   .main {
-    display: grid;
-    grid-template-rows: auto auto;
-    padding: 1rem; /* Reduce padding for smaller screens */
+    padding: 1rem;
   }
 
   .textarea {
-    width: auto; /* Full width on smaller screens */
-    height: 120px; /* Slightly smaller height */
+    height: 120px;
   }
 
   .button {
-    width: auto; /* Full width on smaller screens */
-    margin-right: 15; 
+    width: 100%;
   }
 
-  .button:disabled {
-    margin-right: 15;
-  
-    opacity: 0.6;}
-
   .messageBox {
-    max-width: 100%; /* Ensure it fits within the screen */
+    width: 100%;
+    max-width: 100%;
   }
 }
 
 /* Tablet and Smaller Desktop */
 @media (min-width: 701px) and (max-width: 1120px) {
-  .grid {
-    grid-template-columns: repeat(2, 50%);
+  .main {
+    padding: 1.5rem;
+    margin: 0 auto;
   }
 }
 
@@ -176,13 +175,3 @@
     filter: invert(1) drop-shadow(0 0 0.3rem #ffffff70);
   }
 }
-
-@keyframes rotate {
-  from {
-    transform: rotate(360deg);
-  }
-  to {
-    transform: rotate(0deg);
-  }
-}
-
