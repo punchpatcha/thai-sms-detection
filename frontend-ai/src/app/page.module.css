@@ -1,7 +1,7 @@
 /* Base styles for larger screens */
 .main {
   display: grid;
-  grid-template-rows: 30rem auto; 
+  grid-template-rows: 10rem auto auto; 
   height: 100vh; 
   padding: 5rem; 
   gap: 1rem; 
@@ -92,30 +92,6 @@
   border-color: #52be80 ; /* Darker green border */
 }
 
-/* Responsive Styles for Mobile */
-@media (max-width: 700px) {
-  .main {
-    display: grid;
-    grid-template-rows: auto auto;
-    padding: 1rem; /* Reduce padding for smaller screens */
-  }
-
-  .textarea {
-    width: auto; /* Full width on smaller screens */
-    height: 120px; /* Slightly smaller height */
-  }
-
-  .button {
-    width: auto; /* Full width on smaller screens */
-    margin-left: 0; /* Remove left margin */
-    margin-right: 0; /* Remove right margin */
-  }
-
-  .messageBox {
-    max-width: 100%; /* Ensure it fits within the screen */
-  }
-}
-
 /* Info Box Styles */
 .resultContainer {
   position: relative;
@@ -145,6 +121,43 @@
 .resultContainer:hover .infoBox {
   visibility: visible;
   opacity: 1;
+}
+
+.chartContainer {
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  max-width: 600px;
+}
+
+
+
+/* Responsive Styles for Mobile */
+@media (max-width: 700px) {
+  .main {
+    display: grid;
+    grid-template-rows: auto auto;
+    padding: 1rem; /* Reduce padding for smaller screens */
+  }
+
+  .textarea {
+    width: auto; /* Full width on smaller screens */
+    height: 120px; /* Slightly smaller height */
+  }
+
+  .button {
+    width: auto; /* Full width on smaller screens */
+    margin-right: 15; 
+  }
+
+  .button:disabled {
+    margin-right: 15;
+  
+    opacity: 0.6;}
+
+  .messageBox {
+    max-width: 100%; /* Ensure it fits within the screen */
+  }
 }
 
 /* Tablet and Smaller Desktop */

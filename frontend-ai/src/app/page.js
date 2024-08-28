@@ -2,12 +2,27 @@
 
 import { useState } from 'react';
 import styles from './page.module.css';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+import { Bar } from 'react-chartjs-2';
 
+// Register the necessary components for the chart
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 export default function Home() {
   const [message, setMessage] = useState('');
   const [result, setResult] = useState('');
   const [loading, setLoading] = useState(false); // New state for loading
+
+  const [hamCount, setHamCount] = useState(0);
+  const [spamCount, setSpamCount] = useState(0);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,15 +32,15 @@ export default function Home() {
       setResult(''); // Clear the result
       return;}
       
-  // Set loading to true
-  setLoading(true);
+    // Set loading to true
+    setLoading(true);
 
  // Mock response
-  // const mockData = { prediction: "ham" }; // Change to "spam" to test the other case
-  //setTimeout(() => {
-    // setResult(mockData.prediction);
-    //setLoading(false); // Set loading to false after response
- // }, 1000); // Simulate a delay for loading
+   //  const mockData = { prediction: "ham" }; // Change to "spam" to test the other case
+    //  setTimeout(() => {
+    //  setResult(mockData.prediction);
+    //  setLoading(false); // Set loading to false after response
+   //   }, 1000); // Simulate a delay for loading
 
     console.log("API URL:", process.env.NEXT_PUBLIC_API_URL); // Log API URL
 
@@ -45,6 +60,13 @@ export default function Home() {
 
     const data = await response.json();
     setResult(data.prediction);
+
+    // Update the count based on the result
+    if (data.prediction === 'ham') {
+      setHamCount(prevCount => prevCount + 1);
+    } else if (data.prediction === 'spam') {
+      setSpamCount(prevCount => prevCount + 1);
+    }
     setLoading(false); // Set loading to false after response
   };
 
@@ -57,7 +79,21 @@ export default function Home() {
         <h1>Thai SMS Detection</h1>
         <h2 >ตรวจจับข้อความหลอกลวง</h2>
       </div>
-      
+      {/* Chart Visualization */}
+      <div className={styles.chartContainer}>
+            <Bar
+              data={{
+                labels: ['Ham', 'Spam'],
+                datasets: [
+                  {
+                    label: 'SMS Classification',
+                    data: [hamCount, spamCount],
+                    backgroundColor: ['#52be80', '#ec7063'],
+                  },
+                ],
+              }}
+            />
+          </div>
       <div className={styles.formContainer}>
         <form onSubmit={handleSubmit}>
           <textarea
@@ -82,6 +118,7 @@ export default function Home() {
             </div>
           </div>
         )}
+          
         </div>
     </main>
   );
