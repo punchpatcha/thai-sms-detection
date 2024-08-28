@@ -31,7 +31,30 @@ def predict():
     vect_data = cv.transform([data]).toarray()
     prediction = clf.predict(vect_data)[0]
     result = "spam" if prediction == 1 else "ham"
-    return jsonify({"prediction": result})
+    
+    # Extract word frequencies for the bubble chart
+    word_frequencies = extract_word_frequencies(data)
+    
+    return jsonify({
+        "prediction": result,
+        "wordFrequencies": word_frequencies
+    })
+
+def extract_word_frequencies(message):
+    # Tokenize and clean the message
+    tokens = mmcut(message)
+    tokens = [word for word in tokens if word not in thai_stopwords.get_stopwords()]
+    
+    # Count word frequencies
+    word_counts = pd.Series(tokens).value_counts().to_dict()
+    
+    # Mock categories for demo; replace with actual logic to classify words if needed
+    word_frequencies = [
+        {"word": word, "ham": count if 'ham' in word else 0, "spam": count if 'spam' in word else 0}
+        for word, count in word_counts.items()
+    ]
+    
+    return word_frequencies
 
 if __name__ == '__main__':
     # Use the PORT environment variable provided by Render
