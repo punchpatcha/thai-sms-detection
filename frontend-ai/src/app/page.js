@@ -10,11 +10,12 @@ import {
   Title,
   Tooltip,
   Legend,
+  ArcElement,  // Import for pie charts
 } from 'chart.js';
-import { Bar } from 'react-chartjs-2';
+import { Bar, Pie } from 'react-chartjs-2';
 
 // Register the necessary components for the chart
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement);
 
 export default function Home() {
   const [message, setMessage] = useState('');
@@ -23,6 +24,7 @@ export default function Home() {
 
   const [hamCount, setHamCount] = useState(0);
   const [spamCount, setSpamCount] = useState(0);
+  const [confidenceData, setConfidenceData] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -67,6 +69,18 @@ export default function Home() {
     } else if (data.prediction === 'spam') {
       setSpamCount(prevCount => prevCount + 1);
     }
+
+    // Set the confidence data for visualization
+    setConfidenceData({
+      labels: ['Ham', 'Spam'],
+      datasets: [
+        {
+          label: 'Confidence',
+          data: [100 - data.confidence, data.confidence], // Adjust data to fit your visualization
+          backgroundColor: ['#52be80', '#ec7063'],
+        },
+      ],
+    });
     setLoading(false); // Set loading to false after response
   };
 
@@ -80,20 +94,28 @@ export default function Home() {
         <h2 >ตรวจจับข้อความหลอกลวง</h2>
       </div>
       {/* Chart Visualization */}
-          <div className={styles.chartContainer}>
-            <Bar
-              data={{
-                labels: ['Ham', 'Spam'],
-                datasets: [
-                  {
-                    label: 'SMS Classification',
-                    data: [hamCount, spamCount],
-                    backgroundColor: ['#52be80', '#ec7063'],
+      <div className={styles.chartContainer}>
+        {confidenceData && (
+          <Pie
+            data={confidenceData}
+            options={{
+              plugins: {
+                legend: {
+                  position: 'top',
+                },
+                tooltip: {
+                  callbacks: {
+                    label: (tooltipItem) => {
+                      const value = tooltipItem.raw;
+                      return ` ${tooltipItem.label}: ${value.toFixed(2)}%`;
+                    },
                   },
-                ],
-              }}
-            />
-          </div>
+                },
+              },
+            }}
+          />
+        )}
+      </div>
       <div className={styles.formContainer}>
         <form onSubmit={handleSubmit}>
           <textarea
