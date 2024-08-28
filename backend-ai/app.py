@@ -9,7 +9,6 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.svm import LinearSVC
 import pickle
 import emoji
-import numpy as np
 
 # Flask app setup
 app = Flask(__name__)
@@ -31,19 +30,8 @@ def predict():
     data = request.json['message']
     vect_data = cv.transform([data]).toarray()
     prediction = clf.predict(vect_data)[0]
-    proba = clf.decision_function(vect_data)[0]  # Get the distance from the decision boundary
-    proba = np.abs(proba)  # Absolute value to represent confidence
-
-    # Normalize the probability for visualization
-    max_proba = np.max([proba, 1 - proba])  # 1 - proba for the opposite class
-    proba_percentage = proba / max_proba * 100
-
     result = "spam" if prediction == 1 else "ham"
-    return jsonify({
-        "prediction": result,
-        "probability": proba_percentage,
-        "confidence": proba
-    })
+    return jsonify({"prediction": result})
 
 if __name__ == '__main__':
     # Use the PORT environment variable provided by Render
